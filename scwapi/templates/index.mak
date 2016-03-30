@@ -4,18 +4,21 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <textarea id="editorOriginal">
-            original
+        <textarea id="editorLocal">
+            local
         </textarea>
-   </div>
+    </div>
 </div>
 
 <script type="text/javascript">
-    CKEDITOR.replace('editorOriginal', {
-        language : 'en',
+    CKEDITOR.replace('editorLocal', {
+        scayt_serviceProtocol: 'http',
+		scayt_serviceHost: '192.168.1.2',
+		scayt_servicePort: 7575,
+		scayt_servicePath: 'scayt/ssrv.json',
+		scayt_customerId: '',
+        scayt_srcUrl: '/lib/ckscayt/ckscayt.js',
         scayt_autoStartup: true
     });
-
-        CKEDITOR.config.scayt_sLang= 'de_DE'
-
+    CKEDITOR.config.scayt_sLang= 'fa_IR'
 </script>

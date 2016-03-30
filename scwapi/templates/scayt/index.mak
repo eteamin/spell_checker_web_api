@@ -13,8 +13,8 @@
 <script type="text/javascript">
     CKEDITOR.replace('editorLocal', {
         scayt_serviceProtocol: 'http',
-		scayt_serviceHost: '192.168.1.30',
-		scayt_servicePort: 8080,
+		scayt_serviceHost: '192.168.1.2',
+		scayt_servicePort: 7575,
 		scayt_servicePath: 'scayt/ssrv.json',
 		scayt_customerId: '',
         scayt_srcUrl: '/lib/ckscayt/ckscayt.js',
