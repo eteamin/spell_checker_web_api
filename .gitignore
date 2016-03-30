@@ -38,3 +38,5 @@ __pycache__
 #PyCharm
 .idea
 data
+devdata.db
+
