@@ -3,8 +3,10 @@ import json
 from tg import expose, redirect, validate, flash, url
 from scwapi.lib.base import BaseController
 from persian_spell_checker import spell_checker
+from os import path
 
 
+dictionary_directory = path.abspath(path.join('scwapi', ('..', 'dictionary')))
 # from scwapi.model import DBSession
 
 
@@ -29,7 +31,7 @@ class SCAYTController(BaseController):
         }
 
     def check_spelling(self, text):
-        with open('big.txt', 'r') as my_file:
+        with open(dictionary_directory, 'r') as my_file:
             check = spell_checker.SpellChecker(my_file.read())
             return check.correct(text)
 

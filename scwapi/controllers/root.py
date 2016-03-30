@@ -44,7 +44,9 @@ class RootController(BaseController):
     @expose('scwapi.templates.index')
     def index(self):
         """Handle the front-page."""
-        return dict(page='index')
+        server_host = ''
+        server_port = ''
+        return dict(page='index', server_host=server_host, server_port=server_port)
 
     @expose('scwapi.templates.about')
     def about(self):
