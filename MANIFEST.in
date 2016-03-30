@@ -1,0 +1,4 @@
+recursive-include scwapi/public *
+include scwapi/public/favicon.ico
+recursive-include scwapi/i18n *
+recursive-include scwapi/templates *
