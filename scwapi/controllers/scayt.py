@@ -31,7 +31,7 @@ class SCAYTController(BaseController):
         }
 
     def check_spelling(self, text):
-        with open(dictionary_filename, 'r') as my_file:
+        with open(dictionary_filename, 'r', encoding='utf8') as my_file:
             check = spell_checker.SpellChecker(my_file.read())
             return check.correct(text)
 
