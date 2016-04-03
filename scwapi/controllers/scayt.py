@@ -2,7 +2,7 @@
 import json
 from tg import expose, redirect, validate, flash, url
 from scwapi.lib.base import BaseController
-from persian_spell_checker import spell_checker
+from spell_checker import spell_checker
 from os import path
 import scwapi
 
