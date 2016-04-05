@@ -29,7 +29,8 @@ class Dictionary(object):
 def load_dictionary():
     try:
         if not words_dictionary:
-            return
+            with open(dictionary_filename, 'r') as my_file:
+                return Dictionary(my_file.read())
     except NameError:
         with open(dictionary_filename, 'r') as my_file:
             return Dictionary(my_file.read())
