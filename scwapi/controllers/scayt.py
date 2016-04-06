@@ -29,10 +29,10 @@ class Dictionary(object):
 def load_dictionary():
     try:
         if not words_dictionary:
-            with open(dictionary_filename, 'r') as my_file:
+            with open(dictionary_filename, 'r', encoding='utf-8') as my_file:
                 return Dictionary(my_file.read())
     except NameError:
-        with open(dictionary_filename, 'r') as my_file:
+        with open(dictionary_filename, 'r', encoding='utf-8') as my_file:
             return Dictionary(my_file.read())
 
 words_dictionary = load_dictionary()
