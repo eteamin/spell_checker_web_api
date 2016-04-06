@@ -56,8 +56,8 @@ class SCAYTController(BaseController):
 
         return {
             "langList": {
-                "ltr": {"fa_IR": "Persian"},
-                "rtl": {}
+                "ltr": {},
+                "rtl": {"fa_IR": "Persian"}
             },
             "verLang": 6
         }
