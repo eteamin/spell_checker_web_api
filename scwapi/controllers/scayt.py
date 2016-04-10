@@ -7,6 +7,8 @@ from scwapi.lib.base import BaseController
 from os import path
 from faspell import spell_checker
 import scwapi
+from messenger.messenger import Messenger
+
 
 dictionary_filename = path.abspath(path.join(path.dirname(scwapi.__file__), '..', 'database', 'dictionary'))
 # from scwapi.model import DBSession
@@ -15,36 +17,37 @@ global words_dictionary
 
 
 class Dictionary(object):
-    def __init__(self, database):
-        self.word_list_database = self.train(self.words(database))
+    def __init__(self, filename):
+        self.database = filename
+        self.load()
+        self.dictionary = {}
+
+    def add_word(self, word):
+        self.dictionary[word] = 1
+        self.dump(word)
+
+    def dump(self, word):
+        with open(self.database, 'a', encoding='utf-8') as dictionary:
+            dictionary.write('%s%s' % ('\n', word))
 
     def words(self, database):
         return re.split('\n', database)
 
-    def train(self, features):
-        model = dict.fromkeys(features, 1)
-        return model
+    def train(self, words):
+        return dict.fromkeys(words, 1)
+
+    def load(self):
+        try:
+            if not words_dictionary:
+                with open(self.database, 'r', encoding='utf-8') as my_file:
+                    self.dictionary = self.train(self.words(my_file.read()))
+        except NameError:
+                with open(self.database, 'r', encoding='utf-8') as my_file:
+                    self.dictionary = self.train(self.words(my_file.read()))
 
 
-def load_dictionary():
-    try:
-        if not words_dictionary:
-            with open(dictionary_filename, 'r', encoding='utf-8') as my_file:
-                return Dictionary(my_file.read())
-    except NameError:
-        with open(dictionary_filename, 'r', encoding='utf-8') as my_file:
-            return Dictionary(my_file.read())
+words_dictionary = Dictionary(dictionary_filename).dictionary
 
-words_dictionary = load_dictionary()
-
-
-# class Singleton(object):
-#     _instance = None
-#
-#     def __new__(cls, *args, **kwargs):
-#         if not isinstance(cls._instance, cls):
-#             cls._instance = object.__new__(cls, *args, **kwargs)
-#         return cls._instance
 
 class SCAYTController(BaseController):
     @expose('scwapi.templates.scayt.index')
@@ -56,8 +59,8 @@ class SCAYTController(BaseController):
 
         return {
             "langList": {
-                "ltr": {},
-                "rtl": {"fa_IR": "Persian"}
+                "ltr": {"en_US": "Persian"},
+                "rtl": {}
             },
             "verLang": 6
         }
@@ -67,9 +70,22 @@ class SCAYTController(BaseController):
             "undefined": True
         }
 
+    def add_to_dictionary(self, text):
+        try:
+            my_dictionary = Dictionary(dictionary_filename)
+            my_dictionary.add_word(text)
+            return {
+                'Ok': True,
+                'error': None
+            }
+
+        except Exception as ex:
+            crow = Messenger(ex)
+            return crow.deliver()
+
     def check_spelling(self, text):
         global words_dictionary
-        check = spell_checker.SpellChecker(words_dictionary.word_list_database)
+        check = spell_checker.SpellChecker(words_dictionary)
         return check.correct(text)
 
     @expose('json')
@@ -81,6 +97,8 @@ class SCAYTController(BaseController):
             result = self.get_banner()
         elif cmd == 'check_spelling':
             result = self.check_spelling(kwargs.get('text'))
+        elif cmd == 'add_to_dictionary':
+            return self.add_to_dictionary(kwargs.get('text'))
         else:
             raise Exception('The requested operation not implemented yet.')
 
