@@ -25,9 +25,12 @@
                editor.addCommand("add_to_dictionary", {
                     exec : function(e)
                     {
+        CKEDITOR.instances.editorlocal.updateElement();
+                        text = e._.selectionPreviousPath.elements[0].$.innerText;
+                        alert(text);
         $.ajax({
             type: "POST",
-            url: "http://localhost:8085/scayt/ssrv.json?cmd=check_spelling&text="+ e._.data,
+            url: "http://localhost:8085/scayt/ssrv.json?cmd=add_to_dictionary&text=" + text,
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
         });

@@ -7,11 +7,11 @@ from scwapi.lib.base import BaseController
 from os import path
 from faspell import spell_checker
 import scwapi
+from datetime import datetime
 from messenger.messenger import Messenger
 
 
 dictionary_filename = path.abspath(path.join(path.dirname(scwapi.__file__), '..', 'database', 'dictionary'))
-# from scwapi.model import DBSession
 
 global words_dictionary
 
@@ -19,16 +19,17 @@ global words_dictionary
 class Dictionary(object):
     def __init__(self, filename):
         self.database = filename
-        self.load()
         self.dictionary = {}
 
     def add_word(self, word):
-        self.dictionary[word] = 1
+        words_dictionary[word] = 1
         self.dump(word)
 
     def dump(self, word):
+        global words_dictionary
         with open(self.database, 'a', encoding='utf-8') as dictionary:
             dictionary.write('%s%s' % ('\n', word))
+        words_dictionary = None
 
     def words(self, database):
         return re.split('\n', database)
@@ -80,7 +81,7 @@ class SCAYTController(BaseController):
             }
 
         except Exception as ex:
-            crow = Messenger(ex)
+            crow = Messenger(str(ex))
             return crow.deliver()
 
     def check_spelling(self, text):
