@@ -7,7 +7,6 @@ from scwapi.lib.base import BaseController
 from os import path
 from faspell import spell_checker
 import scwapi
-from datetime import datetime
 from messenger.messenger import Messenger
 
 
@@ -20,6 +19,7 @@ class Dictionary(object):
     def __init__(self, filename):
         self.database = filename
         self.dictionary = {}
+        self.load()
 
     def add_word(self, word):
         words_dictionary[word] = 1
@@ -29,7 +29,6 @@ class Dictionary(object):
         global words_dictionary
         with open(self.database, 'a', encoding='utf-8') as dictionary:
             dictionary.write('%s%s' % ('\n', word))
-        words_dictionary = None
 
     def words(self, database):
         return re.split('\n', database)
