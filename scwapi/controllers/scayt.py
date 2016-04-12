@@ -18,7 +18,6 @@ global words_dictionary
 class Dictionary(object):
     def __init__(self, filename):
         self.database = filename
-        self.dictionary = {}
         self.load()
 
     def add_word(self, word):
@@ -26,7 +25,6 @@ class Dictionary(object):
         self.dump(word)
 
     def dump(self, word):
-        global words_dictionary
         with open(self.database, 'a', encoding='utf-8') as dictionary:
             dictionary.write('%s%s' % ('\n', word))
 
@@ -40,13 +38,15 @@ class Dictionary(object):
         try:
             if not words_dictionary:
                 with open(self.database, 'r', encoding='utf-8') as my_file:
-                    self.dictionary = self.train(self.words(my_file.read()))
+                    return self.train(self.words(my_file.read()))
+            else:
+                return words_dictionary
         except NameError:
                 with open(self.database, 'r', encoding='utf-8') as my_file:
-                    self.dictionary = self.train(self.words(my_file.read()))
+                    return self.train(self.words(my_file.read()))
 
 
-words_dictionary = Dictionary(dictionary_filename).dictionary
+words_dictionary = Dictionary(dictionary_filename).load()
 
 
 class SCAYTController(BaseController):
@@ -84,7 +84,6 @@ class SCAYTController(BaseController):
             return crow.deliver()
 
     def check_spelling(self, text):
-        global words_dictionary
         check = spell_checker.SpellChecker(words_dictionary)
         return check.correct(text)
 
