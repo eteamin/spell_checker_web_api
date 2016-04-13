@@ -8,6 +8,7 @@ from os import path
 from faspell import spell_checker
 import scwapi
 from messenger.messenger import Messenger
+import requests
 
 
 dictionary_filename = path.abspath(path.join(path.dirname(scwapi.__file__), '..', 'database', 'dictionary'))
@@ -21,12 +22,12 @@ class Dictionary(object):
         self.load()
 
     def add_word(self, word):
-        words_dictionary[word] = 1
-        self.dump(word)
-
-    def dump(self, word):
-        with open(self.database, 'a', encoding='utf-8') as dictionary:
-            dictionary.write('%s%s' % ('\n', word))
+        global words_dictionary
+        if word not in words_dictionary:
+            with open(self.database, 'a', encoding='utf-8') as dictionary:
+                dictionary.write('%s%s' % ('\n', word))
+            words_dictionary = None
+            words_dictionary = self.load()
 
     def words(self, database):
         return re.split('\n', database)
@@ -86,6 +87,7 @@ class SCAYTController(BaseController):
     def check_spelling(self, text):
         check = spell_checker.SpellChecker(words_dictionary)
         return check.correct(text)
+
 
     @expose('json')
     def ssrv(self, cmd=None, callback=None, **kwargs):
