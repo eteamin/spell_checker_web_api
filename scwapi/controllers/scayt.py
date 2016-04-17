@@ -7,7 +7,7 @@ from scwapi.lib.base import BaseController
 from os import path
 from faspell import spell_checker
 import scwapi
-from messenger.messenger import Messenger
+import messenger.messenger
 import requests
 
 
@@ -72,26 +72,25 @@ class SCAYTController(BaseController):
         }
 
     def add_to_dictionary(self, text):
-        try:
-            my_dictionary = Dictionary(dictionary_filename)
-            my_dictionary.add_word(text)
-            return {
-                'Ok': True,
-                'error': None
-            }
+        if text is not '':
+            try:
+                my_dictionary = Dictionary(dictionary_filename)
+                my_dictionary.add_word(text)
+                return {
+                    'Ok': True,
+                    'error': None
+                }
 
-        except Exception as ex:
-            crow = Messenger(str(ex))
-            return crow.deliver()
+            except Exception as ex:
+                crow = messenger.messenger.Messenger(str(ex))
+                return crow.deliver()
 
     def check_spelling(self, text):
         check = spell_checker.SpellChecker(words_dictionary)
         return check.correct(text)
 
-
     @expose('json')
     def ssrv(self, cmd=None, callback=None, **kwargs):
-
         if cmd == 'get_lang_list':
             result = self.get_lang_list()
         elif cmd == 'getbanner':
