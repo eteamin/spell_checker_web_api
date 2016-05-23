@@ -7,7 +7,6 @@ from scwapi.lib.base import BaseController
 from os import path
 from faspell import spell_checker
 import scwapi
-import messenger.messenger
 import requests
 
 
@@ -73,17 +72,12 @@ class SCAYTController(BaseController):
 
     def add_to_dictionary(self, text):
         if text is not '':
-            try:
-                my_dictionary = Dictionary(dictionary_filename)
-                my_dictionary.add_word(text)
-                return {
-                    'Ok': True,
-                    'error': None
-                }
-
-            except Exception as ex:
-                crow = messenger.messenger.Messenger(str(ex))
-                return crow.deliver()
+            my_dictionary = Dictionary(dictionary_filename)
+            my_dictionary.add_word(text)
+            return {
+                'Ok': True,
+                'error': None
+            }
 
     def check_spelling(self, text):
         check = spell_checker.SpellChecker(words_dictionary)
